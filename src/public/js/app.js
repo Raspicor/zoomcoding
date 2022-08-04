@@ -1,17 +1,17 @@
-const socket = new WebSocket(`ws://${window.location.host}`);
+const socket = io();
 
-socket.addEventListener("open", () => {
-  console.log("Connected to Server ✅");
-});
+const welcome = document.getElementById("welcome");
+const form = welcome.querySelector("form");
 
-socket.addEventListener("message", (message) => {
-  console.log("New message: ", message.data);
-});
+function backendDone(msg) {
+  console.log(`The backend says : ${msg}`);
+}
 
-socket.addEventListener("close", () => {
-  console.log("Disconnected from Server ❌");
-});
+function handleRoomSubmit(event) {
+  event.preventDefault();
+  const input = form.querySelector("input");
+  socket.emit("enter_room", input.value, backendDone);
+  input.value = "";
+}
 
-setTimeout(() => {
-  socket.send("hello from the browser!");
-}, 10000);
+form.addEventListener("submit", handleRoomSubmit);
